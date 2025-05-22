@@ -6,4 +6,6 @@ export interface TerrainType {
   interactionWording: string;
   description: string;
   hindrance: number;
+  noiseThreshold: number;
+  frequency: number;
 }

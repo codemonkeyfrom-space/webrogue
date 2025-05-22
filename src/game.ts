@@ -4,7 +4,6 @@ import { Map } from './Map.js'
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    console.log("DOMContentLoaded");
     await go();
   } catch (e) {
     console.error("Error handling DomContentLoaded: ", e);
@@ -12,7 +11,6 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function go() {
-  console.log("go() started");
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   if (!canvas) throw new Error("Canvas element not found");
   const ctx = canvas.getContext("2d")!;
@@ -54,19 +52,28 @@ async function go() {
   };
 
   function resizeCanvasToFit() {
-    console.log('resize');
-    viewportWidth = Math.floor(canvas.offsetWidth / cellWidth);
-    viewportHeight = Math.floor(canvas.offsetHeight / cellHeight);
+    const rawWidth = canvas.offsetWidth;
+    const rawHeight = canvas.offsetHeight;
+
+    // Skip if canvas isn't visible yet
+    if (rawWidth === 0 || rawHeight === 0) {
+      console.warn("Canvas not sized yet. Trying again soon...");
+      requestAnimationFrame(resizeCanvasToFit);
+      return;
+    }
+
+    viewportWidth = Math.floor(rawWidth / cellWidth);
+    viewportHeight = Math.floor(rawHeight / cellHeight);
 
     canvas.width = viewportWidth * cellWidth;
     canvas.height = viewportHeight * cellHeight;
     ctx.font = `${cellHeight}px monospace`;
     ctx.textBaseline = "top";
+
     drawMap();
   }
 
   function isWalkable(x: number, y: number) {
-    console.log("isWalkable " + x + ", " + y)
     const terrainType = map.getCell(x, y)!.terrain;
     return terrainType.hindrance < 2 || (player.x == x && player.y == y);
   }
@@ -81,12 +88,10 @@ async function go() {
   }
   
   function playerTurn(dx: number, dy: number) {
-    console.log("playerTurn x y: " , dx, dy);
     const direction = getDirectionName(dx, dy);
     echoCommand(direction);
     moveEntity(player, dx, dy);
     const mapCell = map.getCell(player.x, player.y);
-    console.log(`player turn ${dx}, ${dy} to ${player.x}, ${player.y}`);        
     if (!mapCell) {
       console.error("couldn't get cell " + player.x + ", " + player.y);
       return;
@@ -103,7 +108,6 @@ async function go() {
   }
 
   function drawMap() {
-    console.log('drawMap');
     echoCommand(`viewport w, h: ${viewportWidth}, ${viewportHeight}` );
     const mapWidth = map.getWidth();
     const mapHeight = map.getHeight();
@@ -124,13 +128,11 @@ async function go() {
       for (let x = startX; x < endX; x++) {
 
         let mapCell = map.getCell(x, y);
-        console.log("mapCell", mapCell);
         if (!mapCell) {
           console.error("couldn't get cell " + x + ", " + y);
           return;
         }
         const terrainType = mapCell.terrain;
-        console.log("cell x y ", x, y);
         // ascertain the topmost glyph and color, so we can draw it
         let topGlyph = terrainType.glyph ?? " ";
         let topFg = terrainType.fg;
@@ -165,7 +167,8 @@ async function go() {
     }, 100);
   });
 
-  resizeCanvasToFit();
+  requestAnimationFrame(() => {
+    resizeCanvasToFit();
+  });
 }
-console.log('oops');
 export {};
