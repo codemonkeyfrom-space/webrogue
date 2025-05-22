@@ -1,0 +1,98 @@
+{
+  "wallVertical": {
+    "glyph": "│",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallHorizontal": {
+    "glyph": "─",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallCornerTopLeft": {
+    "glyph": "┌",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallCornerTopRight": {
+    "glyph": "┐",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallCornerBottomLeft": {
+    "glyph": "└",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallCornerBottomRight": {
+    "glyph": "┘",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallTLeft": {
+    "glyph": "├",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallTRight": {
+    "glyph": "┤",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallBottomT": {
+    "glyph": "┴",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallTopT": {
+    "glyph": "┬",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "wallCross": {
+    "glyph": "┼",
+    "fg": "grey",
+    "bg": "black",
+    "interactionWording": "passing through a",
+    "description": "wall",
+    "hindrance": 10
+  },
+  "baseEntrance": {
+    "glyph": "0",
+    "fg": "yellow",
+    "bg": "black",
+    "interactionWording": "standing at an",
+    "description": "entrance to a base",
+    "hindrance": 1
+  }
+}
