@@ -115,7 +115,7 @@ async function go() {
     
     const halfX = Math.floor(viewportWidth / 2);
     const halfY = Math.floor(viewportHeight / 2);
-    const startX = Math.min(Math.max(0, player.x - halfX), mapHeight - viewportWidth);
+    const startX = Math.min(Math.max(0, player.x - halfX), mapWidth - viewportWidth);
     const startY = Math.min(Math.max(0, player.y - halfY), mapHeight - viewportHeight);
     echoCommand(`start x, y: ${startX}, ${startY}` );
     const endX = Math.min(mapWidth, startX + viewportWidth);
