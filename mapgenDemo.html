@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>8-Direction ASCII Roguelike</title>
+
+  <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: #111;
+  color: #fff;
+}
+
+input {
+  width: 60px;
+  text-align: center;
+  color: #0F0;
+  background-color: black;
+}
+/* Top half: canvas */
+#canvasDiv {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Make canvas fill parent */
+#canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000; /* optional */
+}
+
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.5); /* dim background */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #222;
+  color: #fff;
+  padding: 20px;
+  border: 2px solid #0ff;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.close {
+  cursor: pointer;
+  float: right;
+  font-size: 24px;
+  margin-top: -10px;
+  margin-right: -10px;
+}
+
+#btnSettings {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+  bottom: 10px;
+  right: 10px;
+  position: absolute;
+}
+
+  </style>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2216%22>🌟</text></svg>">
+
+</head>
+<body>
+    <div id="canvasDiv">
+      <canvas id="canvas" class="panel"></canvas>
+       <button id="btnSettings" title="Settings">⚙️</button>
+    </div>
+    <div id="popup" class="panel modal">
+      <div id="popupLeft">
+        <table>
+          <tr>
+            <td>
+              <label for="rngCellSize">cell size</label>
+            </td>
+            <td>
+              <input type="range" id="rngCellSize" min="2" max="240" value="10"></input>
+              <span id="spnCellSize"></span>
+            </td>
+          </tr>
+
+
+
+          
+          <tr>
+            <td>
+              <label for="rngMapSize">map size</label>
+            </td>
+            <td>
+              <input type="range" id="rngMapSize" min="100" max="1000" value="100"></input>
+              <span id="spnMapSize"></span>
+            </td>
+          </tr>
+          
+          <tr>
+            <td>
+              <label for="txtBaseFreq">base freq</label>
+            </td>
+            <td>
+              <input type="text" id="txtBaseFreq" value="1.5"></input>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="txtNoiseMultiplier">noise mult.</label>
+            </td>
+            <td>
+              <input type="text" id="txtNoiseMultiplier" value="0.5"></input>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+
+
+
+      <div id="popupRight">
+        <table>
+          <th></th>
+          <th>glyph</th>
+          <th>color</th>
+          <th>noiseThreshold</th>
+          <tr>
+            <td>
+              
+            </td>
+            <td>
+              <input type="text" id="txtTerrain1Glyph" value="W"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain1Color" value="blue"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain1NoiseThreshold" value="0.3"></input>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain2Glyph" value="~"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain2Color" value="blue"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain2NoiseThreshold" value="0.35"></input>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain3Glyph" value="-"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain3Color" value="yellow"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain3NoiseThreshold" value="0.36"></input>
+            </td>
+          </tr>
+
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain4Glyph" value=" "></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain4Color" value="grey"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain4NoiseThreshold" value="0.37"></input>
+            </td>
+          </tr>
+
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain5Glyph" value="."></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain5Color" value="grey"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain5NoiseThreshold" value="0.38"></input>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain6Glyph" value="."></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain6Color" value="green"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain6NoiseThreshold" value="0.5"></input>
+            </td>
+          </tr>
+
+
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain7Glyph" value="h"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain7Color" value="green"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain7NoiseThreshold" value="0.7"></input>
+            </td>
+          </tr>
+
+          
+          <tr>
+            <td>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain8Glyph" value="^"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain8Color" value="grey"></input>
+            </td>
+            <td>
+              <input type="text" id="txtTerrain8NoiseThreshold" value="0.8"></input>
+            </td>
+          </tr>
+
+          
+          <tr><td></td></tr>
+          <tr>
+            <td></td><td></td><td></td>
+            <td>
+              <button id="btnExportTerrain">Export Terrain Types</button>
+            </td>
+          </tr>
+          
+          <tr><td></td></tr>
+          <tr>
+            <td></td><td></td><td></td>
+            <td>
+              <button id="btnExportMap">Export visible map</button>
+            </td>
+          </tr>
+
+          
+          <tr><td></td></tr>
+          <tr>
+            <td></td><td></td><td></td>
+            <td>
+              <button id="btnRestoreDefaults">Restore Defaults</button>
+            </td>
+          </tr>
+
+          <tr><td></td></tr>
+          <tr>
+            <td></td><td></td><td></td>
+            <td>
+              <button id="btnApply">OK</button>
+            </td>
+          </tr>
+
+        </table>
+
+      </div>
+    </div>
+  <script type="module" src="./src/mapgenDemo/Demo.ts"></script>
+</body>
+</html>
