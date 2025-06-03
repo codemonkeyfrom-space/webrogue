@@ -10,39 +10,19 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-console.log("what");
 async function go() {
-  console.log("go");
   const canvas = document.getElementById("canvas") as HTMLCanvasElement;
   if (!canvas) throw new Error("Canvas element not found");
   const ctx = canvas.getContext("2d")!;
 
-  const rngCellSize = document.getElementById("rngCellSize") as HTMLInputElement;
-  const spnCellSize = document.getElementById("spnCellSize") as HTMLInputElement;
-
-  spnCellSize.textContent = rngCellSize.value;
-  rngCellSize.addEventListener('input', () => {
-    spnCellSize.textContent = rngCellSize.value;
-    saveSettings();
-  });
-
-  const rngMapSize = document.getElementById("rngMapSize") as HTMLInputElement;
-  const spnMapSize = document.getElementById("spnMapSize") as HTMLInputElement;
-
-  spnMapSize.textContent = rngMapSize.value;
-  rngMapSize.addEventListener('input', () => {
-    spnMapSize.textContent = rngMapSize.value;
-    saveSettings();
-  });
-
+  const txtCellSize = document.getElementById("txtCellSize") as HTMLInputElement;
+  const txtMapSize = document.getElementById("txtMapSize") as HTMLInputElement;
   const txtBaseFreq = document.getElementById("txtBaseFreq") as HTMLInputElement;
   const txtNoiseMultiplier = document.getElementById("txtNoiseMultiplier") as HTMLInputElement;
 
   function deleteSettings() {
-    localStorage.removeItem("cellWidth");
-    localStorage.removeItem("cellHeight");
-    localStorage.removeItem("mapWidth");
-    localStorage.removeItem("mapHeight");
+    localStorage.removeItem("cellSize");
+    localStorage.removeItem("mapSize");
     localStorage.removeItem("baseFreq");
     localStorage.removeItem("noiseMultiplier");
     for (let i=1;i<=8;i++){
@@ -56,8 +36,8 @@ async function go() {
   }
 
   function loadSettings() {
-    rngCellSize.value = localStorage.getItem("cellSize") || rngCellSize.value;
-    rngMapSize.value = localStorage.getItem("mapSize") || rngMapSize.value;
+    txtCellSize.value = localStorage.getItem("cellSize") || txtCellSize.value;
+    txtMapSize.value = localStorage.getItem("mapSize") || txtMapSize.value;
     txtBaseFreq.value = localStorage.getItem("baseFreq") || txtBaseFreq.value;
     txtNoiseMultiplier.value = localStorage.getItem("noiseMultiplier") || txtNoiseMultiplier.value;
 
@@ -76,10 +56,10 @@ async function go() {
   }
 
   loadSettings();
-  const getCellWidth = () => parseInt(rngCellSize?.value || "10");
-  const getCellHeight = () => parseInt(rngCellSize?.value || "10") * 2;
-  const getMapWidth = () => parseInt(rngMapSize?.value || "10");
-  const getMapHeight = () => parseInt(rngMapSize?.value || "10") * 2;
+  const getCellWidth = () => parseInt(txtCellSize?.value || "10");
+  const getCellHeight = () => getCellWidth() * 2;
+  const getMapWidth = () => parseInt(txtMapSize?.value || "10");
+  const getMapHeight = () => getMapWidth() * 2;
   const getBaseFreq = () => parseFloat(txtBaseFreq?.value || "1.5");
   const getNoiseMultiplier = () => parseFloat(txtNoiseMultiplier?.value || "0.5");
 
@@ -135,7 +115,7 @@ async function go() {
   }
 
   const playerStart = { x: 1, y: 1 };
-  const map = await Map.create(getMapWidth(), getMapHeight(), getTerrainTypes());
+  const map = await Map.create(getMapWidth(), getMapHeight(), getTerrainTypes(), getBaseFreq(), getNoiseMultiplier());
 
   let viewportWidth = 0;
   let viewportHeight = 0;
@@ -193,7 +173,6 @@ async function go() {
     if (ny > map.getHeight() - 1) ny = 0;
     if (nx < 0) nx = map.getWidth() - 1;
     if (ny < 0) ny = map.getHeight() - 1;
-    console.log("moveEntity to " + nx + ", " + ny);
     if (isWalkable(nx, ny)) {
       entity.x = nx;
       entity.y = ny;
@@ -213,19 +192,15 @@ async function go() {
     const endY = Math.min(mapHeight, startY + viewportHeight);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log("startx, starty", startX, startY);
-    console.log("endX, endY", endX, endY);
     for (let y = startY; y < endY; y++) {
       for (let x = startX; x < endX; x++) {
 
         let mapCell = map.getCell(x, y);
-        console.log("mapcell ", x, y);
         if (!mapCell) {
           console.error("couldn't get cell " + x + ", " + y);
           return;
         }
         const terrainType = mapCell.terrain;
-        // ascertain the topmost glyph and color, so we can draw it
         let topGlyph = terrainType.glyph ?? " ";
         let topFg = terrainType.fg;
         let topBg = terrainType.bg;
@@ -243,7 +218,6 @@ async function go() {
   }
 
   const popup = document.getElementById('popup');
-    // Close if you click outside modal content
   popup?.addEventListener('click', (e) => {
     if (e.target === popup) {
       popup.style.display = 'none';
@@ -313,6 +287,5 @@ async function go() {
     resizeCanvasToFit();
   });
   
-  console.log("end go");
 }
 export {};

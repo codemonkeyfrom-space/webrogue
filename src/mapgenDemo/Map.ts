@@ -8,36 +8,25 @@ export class Map {
   private height: number;
   private terrainTypes: Record<string, TerrainType>;
 
-  private constructor(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>) {
+  private constructor(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>, baseFreq: number, noiseMultiplier: number) {
     this.width = xLen;
     this.height = yLen;
     this.terrainTypes = terrainTypes;
     this.cells = [];
-    this.generateMap();
+    this.generateMap(baseFreq, noiseMultiplier);
   }
 
-  static async create(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>) {
-    return new Map(xLen, yLen, terrainTypes);
+  static async create(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>, baseFreq: number, noiseMultiplier: number) {
+    return new Map(xLen, yLen, terrainTypes, baseFreq, noiseMultiplier);
   }
 
-  private getPassableTerrainTypes(): [string, TerrainType][] {
-    return Object.entries(this.terrainTypes)
-      .filter(([_, t]) => t.hindrance < 2);
-  }
-
-  private getRandomPassableTerrainType() {
-    const passable = this.getPassableTerrainTypes();
-    const randomTerrain = passable[Math.floor(Math.random() * passable.length)];
-    return randomTerrain;
-  }
-
-  private generateMap(): void {
+  private generateMap(baseFreq: number, noiseMultiplier: number): void {
     const tempCells: MapCell[][] = [];
 
     for (let y = 0; y < this.height; y++) {
       const row: MapCell[] = [];
       for (let x = 0; x < this.width; x++) {
-        const terrainKey = this.generateTerrainForCell(x, y).name;
+        const terrainKey = this.generateTerrainForCell(x, y, baseFreq, noiseMultiplier ).name;
         const terrainData = this.terrainTypes[terrainKey];
         row.push(new MapCell(0, { ...terrainData, name: terrainKey }));
       }
@@ -70,8 +59,8 @@ export class Map {
     return neighbors;
   }
 
-  generateTerrainForCell(x: number, y: number): TerrainType {
-    const noiseValue = getNoiseValue(x, y, this.getWidth(), this.getHeight());
+  generateTerrainForCell(x: number, y: number, baseFreq: number, noiseMultiplier: number): TerrainType {
+    const noiseValue = getNoiseValue(x, y, this.getWidth(), this.getHeight(), baseFreq, noiseMultiplier);
     const neighbors: TerrainType[] = [];
     for (let dy = -1; dy <= 1; dy++) {
       for (let dx = -1; dx <= 1; dx++) {

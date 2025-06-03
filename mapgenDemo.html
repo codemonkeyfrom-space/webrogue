@@ -75,7 +75,6 @@ input {
   right: 10px;
   position: absolute;
 }
-
   </style>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 16 16%22><text y=%2214%22 font-size=%2216%22>🌟</text></svg>">
 
@@ -83,31 +82,26 @@ input {
 <body>
     <div id="canvasDiv">
       <canvas id="canvas" class="panel"></canvas>
-       <button id="btnSettings" title="Settings">⚙️</button>
+      <button id="btnSettings" title="Settings">⚙️</button>
     </div>
     <div id="popup" class="panel modal">
       <div id="popupLeft">
         <table>
           <tr>
             <td>
-              <label for="rngCellSize">cell size</label>
+              <label for="txtCellSize">cell size</label>
             </td>
             <td>
-              <input type="range" id="rngCellSize" min="2" max="240" value="10"></input>
-              <span id="spnCellSize"></span>
+              <input type="text" id="txtCellSize" value="10"></input>
             </td>
           </tr>
-
-
-
           
           <tr>
             <td>
-              <label for="rngMapSize">map size</label>
+              <label for="txtMapSize">map size</label>
             </td>
             <td>
-              <input type="range" id="rngMapSize" min="100" max="1000" value="100"></input>
-              <span id="spnMapSize"></span>
+              <input type="text" id="txtMapSize" value="100"></input>
             </td>
           </tr>
           
@@ -121,7 +115,7 @@ input {
           </tr>
           <tr>
             <td>
-              <label for="txtNoiseMultiplier">noise mult.</label>
+              <label for="txtNoiseMultiplier">magnitude of noise warping</label>
             </td>
             <td>
               <input type="text" id="txtNoiseMultiplier" value="0.5"></input>
