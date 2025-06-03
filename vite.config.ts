@@ -1,14 +1,15 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  base: '/webrogue/',
   build: {
     rollupOptions: {
       input: {
         main: 'index.html',
-        mapgen: 'mapgenDemo.html',  // the name "mapgen" here is arbitrary
+        mapgen: 'mapgenDemo.html'
       },
     },
-    outDir: 'dist', // where Vite puts the built files
-    emptyOutDir: true, // optional, cleans dist before build
+    outDir: 'dist',
+    emptyOutDir: true,
   },
 });
