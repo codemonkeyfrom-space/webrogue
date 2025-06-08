@@ -6,6 +6,8 @@ export class Map {
   private cells: MapCell[][];
   private width: number;
   private height: number;
+  private baseFreq: number;
+  private noiseMultiplier: number;
   private terrainTypes: Record<string, TerrainType>;
 
   private constructor(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>, baseFreq: number, noiseMultiplier: number) {
@@ -13,32 +15,31 @@ export class Map {
     this.height = yLen;
     this.terrainTypes = terrainTypes;
     this.cells = [];
-    this.generateMap(baseFreq, noiseMultiplier);
+    this.baseFreq = baseFreq;
+    this.noiseMultiplier = noiseMultiplier;
+    this.generateMap();
   }
 
   static async create(xLen: number, yLen: number, terrainTypes: Record<string, TerrainType>, baseFreq: number, noiseMultiplier: number) {
     return new Map(xLen, yLen, terrainTypes, baseFreq, noiseMultiplier);
   }
 
-  private generateMap(baseFreq: number, noiseMultiplier: number): void {
+  private generateMap(): void {
     const tempCells: MapCell[][] = [];
     for (let y = 0; y < this.height; y++) {
       const row: MapCell[] = [];
       for (let x = 0; x < this.width; x++) {
-        const terrainKey = this.generateTerrainForCell(x, y, baseFreq, noiseMultiplier ).name;
+        const terrainKey = this.generateTerrainForCell(x, y).name;
         const terrainData = this.terrainTypes[terrainKey];
-        row.push(new MapCell(0, { ...terrainData, name: terrainKey }));
+        row.push(new MapCell({ ...terrainData, name: terrainKey }));
       }
       tempCells.push(row);
     }
     this.cells = tempCells;
   }
 
-
-
-
-  generateTerrainForCell(x: number, y: number, baseFreq: number, noiseMultiplier: number): TerrainType {
-    const noiseValue = getNoiseValue(x, y, this.getWidth(), this.getHeight(), baseFreq, noiseMultiplier);
+  generateTerrainForCell(x: number, y: number): TerrainType {
+    const noiseValue = getNoiseValue(x, y, this.getWidth(), this.getHeight(), this.baseFreq, this.noiseMultiplier);
 
     // Pick terrain based on noise threshold
     const candidates = Object.values(this.terrainTypes).filter(t => t.noiseThreshold <= noiseValue);
@@ -48,7 +49,6 @@ export class Map {
       const terrain = pickTerrainFromFrequency(noiseValue, Object.values(this.terrainTypes));
       candidates.push(terrain);
     }
-
     candidates.sort((a, b) => b.noiseThreshold - a.noiseThreshold);
     const noiseBasedTerrain = candidates[0];
     return noiseBasedTerrain;
