@@ -40,11 +40,7 @@ export class Map {
 
   generateTerrainForCell(x: number, y: number): TerrainType {
     const noiseValue = getNoiseValue(x, y, this.getWidth(), this.getHeight(), this.baseFreq, this.noiseMultiplier);
-
-    // Pick terrain based on noise threshold
     const candidates = Object.values(this.terrainTypes).filter(t => t.noiseThreshold <= noiseValue);
-
-    // If no candidates, fallback
     if (candidates.length === 0) {
       const terrain = pickTerrainFromFrequency(noiseValue, Object.values(this.terrainTypes));
       candidates.push(terrain);
